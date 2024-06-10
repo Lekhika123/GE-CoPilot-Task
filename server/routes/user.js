@@ -46,6 +46,10 @@ const CheckLogged = async (req, res, next) => {
   });
 };
 
+/** 1. POST /update_profile:
+       This route is used to update the user profile details such as email, firstName, 
+       lastName, and profilePicture.
+ */
 router.post("/update_profile", async (req, res) => {
   const { email, firstName, lastName, profilePicture } = req.body;
   const done = await db.collection(collections.USER).updateOne(
@@ -60,12 +64,24 @@ router.post("/update_profile", async (req, res) => {
   );
 });
 
+/** 2. GET /checkLogged:
+       This route is used to check if the user is logged in. If the user is logged in, 
+       it returns a status of 208 indicating that the user is already logged in. Otherwise, 
+       it returns a status of 405 indicating that the user is not logged in. 
+       */
 router.get("/checkLogged", CheckLogged, (req, res) => {
   res.status(405).json({
     status: 405,
     message: "Not Logged",
   });
 });
+
+/** 3. POST /signup:
+       This route is used to handle user signup. It first checks if the user is 
+       already logged in. If not, it proceeds with the signup process. Depending 
+       on whether the signup is manual or using OAuth, it sends a verification 
+       email or directly registers the user. 
+       */
 
 router.post("/signup", CheckLogged, async (req, res) => {
   const Continue = async () => {
@@ -183,6 +199,10 @@ router.post("/signup", CheckLogged, async (req, res) => {
   }
 });
 
+/** 4. GET /checkPending:
+       This route is used to check the status of a pending signup request using the provided _id.
+ */
+
 router.get("/checkPending", CheckLogged, async (req, res) => {
   const { _id } = req.query;
   let response = null;
@@ -223,6 +243,9 @@ router.get("/checkPending", CheckLogged, async (req, res) => {
   }
 });
 
+/**5. PUT /signup-finish:
+      This route is used to finish the signup process by verifying the user's email.
+ */
 router.put("/signup-finish", CheckLogged, async (req, res) => {
   let response = null;
   try {
@@ -250,6 +273,10 @@ router.put("/signup-finish", CheckLogged, async (req, res) => {
   }
 });
 
+/**6. GET /login:
+      This route handles user login. If the login is manual or using OAuth, it 
+      authenticates the user accordingly.
+ */
 router.get("/login", CheckLogged, async (req, res) => {
   const Continue = async () => {
     let response = null;
@@ -311,6 +338,10 @@ router.get("/login", CheckLogged, async (req, res) => {
   }
 });
 
+/**7. POST /forgot-request:
+      This route handles the request to reset a forgotten password by sending 
+      a reset link to the user's email.
+ */
 router.post("/forgot-request", CheckLogged, async (req, res) => {
   if (req.body?.email) {
     let secret = Math.random().toString(16);
@@ -373,6 +404,10 @@ router.post("/forgot-request", CheckLogged, async (req, res) => {
   }
 });
 
+/**8. GET /forgot-check:
+      This route checks the validity of the password reset request using the provided userId and secret.
+ */
+
 router.get("/forgot-check", CheckLogged, async (req, res) => {
   if (req.query?.userId && req.query?.secret) {
     let response = null;
@@ -406,6 +441,9 @@ router.get("/forgot-check", CheckLogged, async (req, res) => {
   }
 });
 
+/**9. PUT /forgot-finish:
+      This route is used to finish the password reset process by updating the user's password.
+ */
 router.put("/forgot-finish", CheckLogged, async (req, res) => {
   if (req.body?.userId && req.body?.secret) {
     if (
@@ -451,6 +489,10 @@ router.put("/forgot-finish", CheckLogged, async (req, res) => {
   }
 });
 
+/**10. GET /checkUserLogged:
+       This route checks if a user is logged in. If logged in, it returns a 
+       status of 405 indicating that the user is not logged in.
+ */
 router.get("/checkUserLogged", CheckLogged, (req, res) => {
   res.status(405).json({
     status: 405,
@@ -458,6 +500,9 @@ router.get("/checkUserLogged", CheckLogged, (req, res) => {
   });
 });
 
+/**11. DELETE /account:
+       This route is used to delete a user's account after verifying the user's identity using JWT.
+ */
 router.delete("/account", async (req, res) => {
   jwt.verify(
     req.cookies?.userToken,
@@ -502,6 +547,9 @@ router.delete("/account", async (req, res) => {
   );
 });
 
+/** 12. POST /otp:
+ *      This route sends an OTP (One-Time Password) to the user's email address.
+ */
 router.post("/otp", async (req, res) => {
   if (req.body?.email) {
     let response = null;
@@ -577,6 +625,9 @@ router.post("/otp", async (req, res) => {
   }
 });
 
+/**13. POST /send_otp:
+       This route sends an OTP to the user's email address and saves the OTP in the database.
+ */
 router.post("/send_otp", async (req, res) => {
   if (req.body?.email) {
     const otp = req.body.otp;
@@ -636,6 +687,9 @@ router.post("/send_otp", async (req, res) => {
   }
 });
 
+/**14.POST /verify_otp:
+      This route verifies the OTP entered by the user and logs the user in if the OTP is correct.
+ */
 router.post("/verify_otp", async (req, res) => {
   if (req.body?.email && req.body?.otp) {
     let response = null;
@@ -695,6 +749,9 @@ router.post("/verify_otp", async (req, res) => {
   }
 });
 
+/**15. GET /logout:
+       This route clears the user's token and logs the user out.
+ */
 router.get("/logout", (req, res) => {
   res.clearCookie("userToken").status(200).json({
     status: 200,

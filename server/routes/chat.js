@@ -57,10 +57,16 @@ const client = new OpenAI({
 });
 const openai = new OpenAI({ apiKey: "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"});
 
+
+/* 1.  GET "/"
+       To provide a welcome message when the root endpoint is accessed.*/
 router.get("/", (req, res) => {
   res.send("Welcome to chatGPT api v1");
 });
 
+/** 2.   GET "/upload"
+ *       Allows users to retrieve previously uploaded files related to a specific chat session.
+ */
 router.get("/upload", CheckUser, async (req, res) => {
   const { userId } = req.body;
   const { chatId } = req.query;
@@ -86,6 +92,11 @@ router.get("/upload", CheckUser, async (req, res) => {
   }
 });
 
+
+ /** 3. POST "/upload"
+  *     Allows users to upload a file, which is then processed by OpenAI for generating responses.
+  * 
+  */
 router.post("/upload", upload.single("file"), CheckUser, async (req, res) => {
   // take file object from frontend upload to openai and store id and file name to mongo db
   const { userId, chatId } = req.body;
@@ -206,6 +217,10 @@ router.post("/upload", upload.single("file"), CheckUser, async (req, res) => {
   }
 });
 
+/** 4. POST "/"
+ *     Handles user input and generates an appropriate response using OpenAI.
+ */
+
 router.post("/", CheckUser, async (req, res) => {
   const { prompt, userId } = req.body;
   let response = {};
@@ -262,6 +277,9 @@ router.post("/", CheckUser, async (req, res) => {
   }
 });
 
+/** 5. PUT "/"
+ *     Allows users to continue a conversation thread by adding a new message.
+ */
 router.put("/", CheckUser, async (req, res) => {
   const { prompt, userId, chatId } = req.body;
   console.log("PUT is being called", req.body);
@@ -396,6 +414,9 @@ router.put("/", CheckUser, async (req, res) => {
   }
 });
 
+/** 6.GET "/saved"
+ *    Allows users to retrieve saved chats, either for the current user or a specific chat ID.
+ */
 router.get("/saved", CheckUser, async (req, res) => {
   const { userId } = req.body;
   const { chatId = null } = req.query;
@@ -427,6 +448,10 @@ router.get("/saved", CheckUser, async (req, res) => {
   }
 });
 
+/** 7. GET "/history"
+ *     Allows users to retrieve their chat history.
+ * 
+ */
 router.get("/history", CheckUser, async (req, res) => {
   const { userId } = req.body;
 
@@ -449,6 +474,9 @@ router.get("/history", CheckUser, async (req, res) => {
     }
   }
 });
+/**8.DELETE "/all"
+ *   Allows users to clear their chat history.
+ */
 
 router.delete("/all", CheckUser, async (req, res) => {
   const { userId } = req.body;
@@ -473,6 +501,9 @@ router.delete("/all", CheckUser, async (req, res) => {
 });
 
 //Router for Attached Documnets Modal
+/**  9. POST "/getfile" 
+ *      Allows users to retrieve files attached to a particular chat session.
+*/
 
 router.post("/getfile", async (req, res) => {
   const { userId, chatId } = req.body;
@@ -496,6 +527,9 @@ router.post("/getfile", async (req, res) => {
   }
 });
 
+/** 10. POST "/deletefile"
+ *      Allows users to delete a file attached to a chat session
+ */
 router.post("/deletefile", CheckUser, async (req, res) => {
   const { userId, chatId, file_name } = req.body;
   let response = null;
