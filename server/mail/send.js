@@ -1,11 +1,11 @@
 import nodemailer from 'nodemailer'
-import dotnet from 'dotenv'
+import dotenv from 'dotenv';
 
-dotnet.config()
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    host:"smtp.gmail.com",
+    // host:"smtp.gmail.com",
     auth: {
         user: process.env.MAIL_EMAIL,
         pass: process.env.MAIL_SECRET
@@ -13,16 +13,16 @@ const transporter = nodemailer.createTransport({
 })
 
 export default ({ to, subject, html }) => {
-    var options = {
+    const options = {
         from: `GE CoPilot™ <${process.env.MAIL_EMAIL}>`,
         to,
         subject,
         html
     }
 
-    transporter.sendMail(options, function (err, done) {
+    transporter.sendMail(options, (err, done) =>{
         if (err) {
-            console.log(err);
+            console.error('Failed to send email:',err);
         } else {
             console.log('Email sent: ', done?.response);
         }

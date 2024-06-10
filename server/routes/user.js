@@ -584,7 +584,7 @@ router.post("/send_otp", async (req, res) => {
     try {
       // Create Nodemailer transporter
       const transporter = nodemailer.createTransport({
-        service: "Gmail",
+        service: "gmail",
         auth: {
           user: process.env.MAIL_EMAIL,
           pass: process.env.MAIL_SECRET,
@@ -628,6 +628,7 @@ router.post("/send_otp", async (req, res) => {
       }
     }
   } else {
+    console.error(err);
     return res.status(422).json({
       status: 422,
       message: "Email wrong",
