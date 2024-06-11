@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { activePage, addHistory } from "../../redux/history";
 import ReactS3, { deleteFile } from "react-s3";
 import instance from "../../config/instance";
-import "./style.scss";
+import "../../style.scss";
 import { Buffer } from "buffer";
 window.Buffer = Buffer;
 import { useContext } from "react";
