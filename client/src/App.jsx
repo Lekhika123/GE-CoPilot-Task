@@ -152,6 +152,7 @@ const App = () => {
       </section>
     </documentsContext.Provider>
   );
+}
 };
 
 export default App;
