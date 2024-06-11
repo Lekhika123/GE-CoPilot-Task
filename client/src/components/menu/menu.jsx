@@ -177,7 +177,8 @@ const Menu = ({ changeColorMode }) => {
 
   return (
     <Fragment>
-      <Modal changeColorMode={changeColorMode} settingRef={settingRef} />
+      {/* updated modal component */}
+      <Modal changeColorMode={changeColorMode} darkMode={darkMode} settingRef={settingRef} />
       <DocumentModal
         changeColorMode={changeColorMode}
         documentRef={documentRef}
@@ -384,7 +385,7 @@ const Modal = ({ changeColorMode, settingRef }) => {
     }
   };
 
-  
+
 
   const deleteAccount = async () => {
     if (window.confirm("Do you want delete your account")) {
@@ -444,22 +445,20 @@ const Modal = ({ changeColorMode, settingRef }) => {
             <label htmlFor="profile-picture">Profile Picture</label>
             <input type="file" id="profile-picture" ref={fileInputRef} />
           </div>
+
+          {/* here is updated code */}
           <div className="content-submit">
             <div>
               <p>Dark mode</p>
               <button
                 onClick={() => {
-                  let mode = localStorage.getItem("darkMode");
-                  if (mode) {
-                    changeColorMode(false);
-                  } else {
-                    changeColorMode(true);
-                  }
+                  changeColorMode(!darkMode);
                 }}
                 role="switch"
+                aria-checked={darkMode}
                 type="button"
               >
-                <div></div>
+                <div className={`switch ${darkMode ? "active" : ""}`}></div>
               </button>
             </div>
 
@@ -510,25 +509,23 @@ const DocumentModal = ({ changeColorMode, documentRef, documents, deleteFile }) 
             <Xicon />
           </button>
         </div>
+
+        {/* here is updated code */}
         <div className="content ceneter">
           {documents &&
-            documents.map((doc, index) => {
-              return (
-                doc && (
-                  <div
-                    key={index}
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <p>
-                      {index}. {doc}
-                    </p>
-                    <div style={{ cursor: "pointer" }} onClick={() =>deleteFile(doc)}>
-                      <Xicon />
-                    </div>
-                  </div>
-                )
-              );
-            })}
+            documents.map((doc, index) => (
+              <div
+                key={index}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <p>
+                  {index}. {doc}
+                </p>
+                <div style={{ cursor: "pointer" }} onClick={() => deleteFile(doc)}>
+                  <Xicon />
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </div>

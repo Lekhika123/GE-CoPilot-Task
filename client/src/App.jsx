@@ -19,17 +19,28 @@ const App = () => {
   const { loading, user } = useSelector((state) => state);
   const [documents, setDocuments] = useState([]);
   const { _id } = useSelector((state) => state.messages);
+  // const changeColorMode = (to) => {
+  //   if (to) {
+  //     localStorage.setItem("darkMode", true);
+
+  //     document.body.className = "dark";
+  //   } else {
+  //     localStorage.removeItem("darkMode");
+
+  //     document.body.className = "light";
+  //   }
+  // };
+
   const changeColorMode = (to) => {
     if (to) {
-      localStorage.setItem("darkMode", true);
-
+      localStorage.setItem("darkMode", "true");
       document.body.className = "dark";
+      setDarkMode(true);
     } else {
       localStorage.removeItem("darkMode");
-
       document.body.className = "light";
+      setDarkMode(false);
     }
-  };
 
   const getFiles = async () => {
     let res = null;
